@@ -1,6 +1,6 @@
-package com.ezmata.messenger;
+package com.ezmata.messenger.util;
 
-public class PasswordUtils {
+public class PasswordUtil {
     public static boolean isPasswordStrong(String password) {
         if (password.length() < 8) {
             return false;

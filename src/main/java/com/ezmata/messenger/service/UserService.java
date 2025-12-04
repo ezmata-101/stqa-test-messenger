@@ -1,32 +1,36 @@
 package com.ezmata.messenger.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.ezmata.messenger.model.User;
+import com.ezmata.messenger.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
-    private final Map<String, String> users = new ConcurrentHashMap<>();
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService() {
-        this.passwordEncoder = new BCryptPasswordEncoder();
+    private final UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public boolean userExists(String username) {
-        return users.containsKey(username);
+        return userRepository.existsByUsername(username);
     }
 
-    public void registerUser(String username, String rawPassword) {
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        users.put(username, encodedPassword);
+    public User addUser(String username, String email, String password) {
+        return userRepository.add(username, email, password);
     }
 
-    public boolean validateCredentials(String username, String rawPassword) {
-        String storedPassword = users.get(username);
-        return storedPassword != null && passwordEncoder.matches(rawPassword, storedPassword);
+    public Optional<User> getByUsername(String username) {
+        return userRepository.getByUsername(username);
+    }
+
+    public Optional<User> getById(long id) {
+        return userRepository.get(id);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.getAll();
     }
 }
