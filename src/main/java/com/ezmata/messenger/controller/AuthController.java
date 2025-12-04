@@ -1,8 +1,8 @@
 package com.ezmata.messenger.controller;
 
-import com.ezmata.messenger.model.LoginRequest;
-import com.ezmata.messenger.model.LoginResponse;
-import com.ezmata.messenger.model.SignupRequest;
+import com.ezmata.messenger.api.request.LoginRequest;
+import com.ezmata.messenger.api.response.LoginResponse;
+import com.ezmata.messenger.api.request.SignupRequest;
 import com.ezmata.messenger.security.JwtUtil;
 import com.ezmata.messenger.service.UserService;
 import org.springframework.http.HttpStatus;
