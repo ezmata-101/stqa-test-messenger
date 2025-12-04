@@ -1,8 +1,8 @@
 package com.ezmata.messenger.controller;
 
-import com.ezmata.messenger.dto.LoginRequest;
-import com.ezmata.messenger.dto.LoginResponse;
-import com.ezmata.messenger.dto.SignupRequest;
+import com.ezmata.messenger.model.LoginRequest;
+import com.ezmata.messenger.model.LoginResponse;
+import com.ezmata.messenger.model.SignupRequest;
 import com.ezmata.messenger.security.JwtUtil;
 import com.ezmata.messenger.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -23,19 +23,19 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        if (userService.userExists(request.getUsername())) {
+        if (userService.userExists(request.username())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Username already exists");
         }
-        userService.registerUser(request.getUsername(), request.getPassword());
+        userService.registerUser(request.username(), request.password());
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         boolean ok = userService.validateCredentials(
-                request.getUsername(),
-                request.getPassword()
+                request.username(),
+                request.password()
         );
 
         if (!ok) {
@@ -43,7 +43,7 @@ public class AuthController {
                     .body("Invalid username or password");
         }
 
-        String token = jwtUtil.generateToken(request.getUsername());
+        String token = jwtUtil.generateToken(request.username());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 
