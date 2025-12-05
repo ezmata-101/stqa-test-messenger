@@ -1,6 +1,7 @@
 package com.ezmata.messenger.service;
 
 import com.ezmata.messenger.api.response.LoginResponse;
+import com.ezmata.messenger.api.response.SignupResponse;
 import com.ezmata.messenger.model.User;
 import com.ezmata.messenger.security.JwtUtil;
 import org.springframework.stereotype.Service;
@@ -15,23 +16,27 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public User signup(String username, String email, String password) {
+    public SignupResponse signup(String username, String email, String password) {
         if(userService.getByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username already taken");
         }
-        return userService.addUser(username, email, password);
+        return new SignupResponse(userService.addUser(username, email, password));
     }
 
     public LoginResponse login(String username, String password) {
         if(userService.getByUsername(username).isPresent()) {
             User user = userService.getByUsername(username).get();
             if(user.getPassword().equals(password)) {
-                return new LoginResponse(jwtUtil.generateToken(username));
+                return new LoginResponse(jwtUtil.generateToken(username), user.getUserId());
             } else {
                 throw new IllegalArgumentException("Invalid password");
             }
         } else {
             throw new IllegalArgumentException("User not found");
         }
+    }
+
+    public boolean logout(String username) {
+        return true;
     }
 }

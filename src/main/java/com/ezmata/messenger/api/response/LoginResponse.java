@@ -1,5 +1,6 @@
 package com.ezmata.messenger.api.response;
 
 public record LoginResponse(
-        String token
+        String token,
+        long userId
 ) {}

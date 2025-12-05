@@ -1,8 +1,9 @@
 package com.ezmata.messenger.controller;
 
 import com.ezmata.messenger.api.request.LoginRequest;
-import com.ezmata.messenger.api.response.LoginResponse;
 import com.ezmata.messenger.api.request.SignupRequest;
+import com.ezmata.messenger.api.response.LoginResponse;
+import com.ezmata.messenger.api.response.SignupResponse;
 import com.ezmata.messenger.security.JwtUtil;
 import com.ezmata.messenger.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
         try {
-            authService.signup(
+            SignupResponse response = authService.signup(
                     request.username(),
                     request.email(),
                     request.password()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -45,6 +46,15 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestParam String username) {
+        if(authService.logout(username)) {
+            return ResponseEntity.ok("User logged out successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
         }
     }
 
