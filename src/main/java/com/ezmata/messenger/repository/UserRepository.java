@@ -15,4 +15,5 @@ public interface UserRepository {
     boolean blockUser(long userId, long blockId);
     boolean unblockUser(long userId, long blockId);
     boolean isBlockedBy(long userId, long blockedBy);
+    void reset();
 }

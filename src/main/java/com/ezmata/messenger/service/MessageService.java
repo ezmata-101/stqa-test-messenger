@@ -27,10 +27,10 @@ public class MessageService {
             try{
                 return messageRepository.getMessagesForConversation(conversationId).orElse(new ArrayList<Message>());
             }catch (Exception e){
-                throw new IllegalArgumentException("Failed to retrieve messages for this conversation");
+                throw new IllegalArgumentException("Failed to retrieve messages for this conversation: " + e.getMessage());
             }
         }catch (IllegalArgumentException e){
-            throw new IllegalArgumentException("Cannot access messages for this conversation");
+            throw new IllegalArgumentException("Cannot access messages for this conversation: " + e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class MessageService {
                 try{
                     return messageRepository.sendMessage(conversationId, senderId, content).orElse(new ArrayList<Message>());
                 }catch (Exception e){
-                    throw new IllegalArgumentException("Failed to send message to this conversation");
+                    throw new IllegalArgumentException("Failed to send message to this conversation: "+ e.getMessage());
                 }
             }else{
                 throw new IllegalArgumentException("You cannot send message to this conversation");
@@ -55,7 +55,7 @@ public class MessageService {
             try{
                 return messageRepository.sendMessage(conversationId, senderId, content).orElse(new ArrayList<Message>());
             }catch (Exception e){
-                throw new IllegalArgumentException("Failed to send message to this conversation");
+                throw new IllegalArgumentException("Failed to send message to this conversation:" + e.getMessage());
             }
         }
     }

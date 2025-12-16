@@ -15,7 +15,10 @@ import java.util.List;
 @RequestMapping("/api/conversations")
 public class ConversationController {
 
-    ConversationService conversationService;
+    private final ConversationService conversationService;
+    ConversationController(ConversationService conversationService) {
+        this.conversationService = conversationService;
+    }
 
     @GetMapping("/get")
     public ResponseEntity<?> getConversation(Authentication authentication) {

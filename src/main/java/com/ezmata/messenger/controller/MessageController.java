@@ -46,13 +46,18 @@ public class MessageController {
 
     @PostMapping("/messages/{conversationId}/send")
     public ResponseEntity<?> sendMessage(Authentication authentication,
-                                            @PathVariable String conversationId,
+                                            @PathVariable long conversationId,
                                             @RequestBody String content) {
         String username = authentication.getName();
         try{
-            List<Message> messages = messageService.sendMessageToConversation(username, Long.parseLong(conversationId), content);
+            System.out.println("Sending message to conversation ID: " + conversationId + " with content: " + content);
+//            Message[] messages = List.toArray(messageService.sendMessageToConversation(username, conversationId, content));
+
+            Message[] messages = messageService.sendMessageToConversation(username, conversationId, content)
+                    .toArray(new Message[0]);
+
             return ResponseEntity.ok(
-                    new GenericResponse<List<Message>>(
+                    new GenericResponse<>(
                             "Message sent successfully",
                             messages
                     )

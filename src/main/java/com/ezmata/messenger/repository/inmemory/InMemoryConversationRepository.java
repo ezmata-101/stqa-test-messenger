@@ -30,20 +30,26 @@ public class InMemoryConversationRepository implements ConversationRepository {
         return result;
     }
 
+    private Conversation addNewConversation(ConversationType type, List<Long> memberSet, String name) {
+        long id = idGenerator.getAndIncrement();
+        Conversation conversation = new Conversation(id, type, name, new Date().toInstant(), memberSet.get(0));
+        conversations.put(id, conversation);
+        members.put(id, new HashSet<>(memberSet));
+        return conversation;
+    }
+
     @Override
     public Optional<Conversation> addDirectConversation(long userId1, long userId2) {
-        long id = idGenerator.getAndIncrement();
-        Conversation conversation = new Conversation(id, ConversationType.DIRECT, null, new Date().toInstant(), userId1);
-        return Optional.of(conversation);
+        return Optional.of(
+                addNewConversation(ConversationType.DIRECT, Arrays.asList(userId1, userId2), null)
+        );
     }
 
     @Override
     public Optional<Conversation> addGroupConversation(String name, List<Long> memberIds) {
-        long id = idGenerator.getAndIncrement();
-        Conversation conversation = new Conversation(id, ConversationType.GROUP, name, new Date().toInstant(), memberIds.get(0));
-        conversations.put(id, conversation);
-        members.put(id, new HashSet<>(memberIds));
-        return Optional.of(conversation);
+        return Optional.of(
+                addNewConversation(ConversationType.GROUP, memberIds, name)
+        );
     }
     @Override
     public Optional<Conversation> get(long id) {
@@ -107,5 +113,23 @@ public class InMemoryConversationRepository implements ConversationRepository {
             return memberSet.remove(userId);
         }
         return false;
+    }
+
+    @Override
+    public void reset() {
+        System.out.println("Resetting InMemoryConversationRepository...");
+        for (Map.Entry<Long, Conversation> entry : conversations.entrySet()) {
+            System.out.println("Conversation ID: " + entry.getKey() + ", Conversation: " + entry.getValue());
+        }
+        for(Map.Entry<Long, Set<Long>> entry : members.entrySet()) {
+            System.out.print("Conversation ID: " + entry.getKey() + ", Members: " );
+            for(Long memberId : entry.getValue()) {
+                System.out.print(memberId + " ");
+            }
+            System.out.println();
+        }
+        conversations.clear();
+        members.clear();
+        idGenerator.set(201);
     }
 }

@@ -86,4 +86,12 @@ public class InMemoryUserRepository implements UserRepository {
     public boolean existsByUsername(String username) {
         return usersByUsername.containsKey(username);
     }
+
+    @Override
+    public void reset() {
+        usersById.clear();
+        usersByUsername.clear();
+        blockedUsers.clear();
+        userId.set(101);
+    }
 }

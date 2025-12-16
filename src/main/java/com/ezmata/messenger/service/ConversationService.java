@@ -6,16 +6,18 @@ import com.ezmata.messenger.model.User;
 import com.ezmata.messenger.repository.ConversationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ConversationService {
 
-    private UserService userService;
+    private final UserService userService;
     private ConversationRepository conversationRepository;
 
-    public ConversationService(ConversationRepository conversationRepository) {
+    public ConversationService(ConversationRepository conversationRepository, UserService userService) {
+        this.userService = userService;
         this.conversationRepository = conversationRepository;
     }
 
@@ -54,12 +56,29 @@ public class ConversationService {
         }
     }
 
-    public Conversation createGroupConversation(String username, String groupName, List<Long> memberIds) {
+    public Conversation createGroupConversation(String username, String groupName, long[] memberIds) {
+        System.out.print("Creating group conversation with members: ");
+        for (Long id : memberIds) {
+            System.out.print(id + " ");
+        }
+        System.out.println();
         Optional<User> userOpt = userService.getByUsername(username);
+        System.out.println("User found: " + userOpt.isPresent());
         if (userOpt.isPresent()) {
-            var user = userOpt.get();
-            memberIds.add(user.getUserId());
-            Optional<Conversation> conversationOpt = conversationRepository.addGroupConversation(groupName, memberIds);
+            User user = userOpt.get();
+            System.out.println("Creating group conversation for user ID: " + user.getUserId());
+
+            System.out.println("trying to add user ID to member list: " + user.getUserId());
+            System.out.println("Current member IDs before adding: " + memberIds);
+            List<Long> memberIdList = new ArrayList<>();
+            for (long id : memberIds) {
+                memberIdList.add(id);
+            }
+            if (!memberIdList.contains(user.getUserId())) {
+                memberIdList.add(user.getUserId());
+            }
+
+            Optional<Conversation> conversationOpt = conversationRepository.addGroupConversation(groupName, memberIdList);
             if (conversationOpt.isPresent()) {
                 return conversationOpt.get();
             } else {
@@ -83,7 +102,6 @@ public class ConversationService {
 
     public MemberModificationResponse addMembersToConversation(String username, long conversationId, long[] newMemberId) {
         isAConversationMember(username, conversationId);
-
         boolean added = conversationRepository.addMembers(conversationId, newMemberId);
         if (added) {
             Optional<List<Long>> membersOpt = conversationRepository.getMembers(conversationId);
@@ -128,8 +146,13 @@ public class ConversationService {
 
         Conversation conversation = conversationOpt.get();
         Optional<List<Long>> membersOpt = conversationRepository.getMembers(conversationId);
-        if (membersOpt.isEmpty() || !membersOpt.get().contains(user.getUserId())) {
-            throw new SecurityException("User is not a member of this conversation");
+
+        if (membersOpt.isEmpty()) {
+            throw new IllegalArgumentException("Failed to retrieve conversation members");
+        }
+        List<Long> members = membersOpt.get();
+        if (!members.contains(user.getUserId())) {
+            throw new IllegalArgumentException("User is not a member of this conversation");
         }
     }
 

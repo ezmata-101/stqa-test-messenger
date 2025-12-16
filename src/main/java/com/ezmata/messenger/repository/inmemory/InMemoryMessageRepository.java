@@ -4,10 +4,7 @@ import com.ezmata.messenger.model.Message;
 import com.ezmata.messenger.repository.MessageRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
@@ -21,23 +18,35 @@ public class InMemoryMessageRepository implements MessageRepository {
 
     @Override
     public Optional<List<Message>> sendMessage(long conversationId, long senderId, String content) {
+        List<Message> convoMessages = new ArrayList<>();
+
         if(messages.containsKey(conversationId)) {
-            messages.get(conversationId).add(new Message(
-                    nextId.getAndIncrement(),
-                    conversationId,
-                    senderId,
-                    content,
-                    System.currentTimeMillis()
-            ));
-        }else{
-            messages.put(conversationId, List.of(new Message(
-                    nextId.getAndIncrement(),
-                    conversationId,
-                    senderId,
-                    content,
-                    System.currentTimeMillis()
-            )));
+            convoMessages = this.messages.get(conversationId);
         }
+
+        convoMessages.add(
+                new Message(
+                        nextId.getAndIncrement(),
+                        conversationId,
+                        senderId,
+                        content,
+                        System.currentTimeMillis()
+                )
+        );
+        messages.put(conversationId, convoMessages);
         return Optional.ofNullable(messages.get(conversationId));
+    }
+
+    @Override
+    public void reset() {
+        System.out.println("InMemoryMessageRepository contents before reset:");
+        for (Map.Entry<Long, List<Message>> entry : messages.entrySet()) {
+            System.out.println("Conversation ID: " + entry.getKey());
+            for (Message message : entry.getValue()) {
+                System.out.println(message);
+            }
+        }
+        messages.clear();
+        nextId.set(1001);
     }
 }

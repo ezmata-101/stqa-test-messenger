@@ -1,7 +1,5 @@
 package com.ezmata.messenger.records.request;
 
-import java.util.List;
-
 public record CreateConversationRequest (
     String type,
     String name,
@@ -11,7 +9,7 @@ public record CreateConversationRequest (
         return "GROUP".equalsIgnoreCase(type);
     }
 
-    public List<Long> getMembersList() {
-        return memberIds != null ? java.util.Arrays.stream(memberIds).boxed().toList() : java.util.Collections.emptyList();
+    public long[] getMembersList() {
+        return memberIds;
     }
 }
