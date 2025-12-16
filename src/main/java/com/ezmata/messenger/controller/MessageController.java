@@ -1,6 +1,8 @@
 package com.ezmata.messenger.controller;
 
+import com.ezmata.messenger.api.response.GenericResponse;
 import com.ezmata.messenger.model.Message;
+import com.ezmata.messenger.service.MessageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +11,13 @@ import java.util.List;
 
 @RestController
 public class MessageController {
-//    this will by default return last 20 messages, if params are added for pagination, it can return accordingly
+    private final MessageService messageService;
+
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    //    this will by default return last 20 messages, if params are added for pagination, it can return accordingly
 //    add appropriate parameters
     @GetMapping("/messages/{conversationId}/get")
     public ResponseEntity<?> getMessages(Authentication authentication,
@@ -18,10 +26,20 @@ public class MessageController {
                                       @RequestParam(required = false, defaultValue = "20") int size) {
         String username = authentication.getName();
         try{
-//            TODO: MessageService getMessages;
-            return ResponseEntity.ok(List.<Message>of());
+            List<Message> messages = messageService.getMessagesForConversation(username, Long.parseLong(conversationId));
+            return ResponseEntity.ok(
+                    new GenericResponse<List<Message>>(
+                            "Messages retrieved successfully",
+                            messages
+                    )
+            );
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(
+                    new GenericResponse<>(
+                            e.getMessage(),
+                            null
+                    )
+            );
         }
     }
 
@@ -32,10 +50,20 @@ public class MessageController {
                                             @RequestBody String content) {
         String username = authentication.getName();
         try{
-//            TODO: MessageService sendMessage;
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            List<Message> messages = messageService.sendMessageToConversation(username, Long.parseLong(conversationId), content);
+            return ResponseEntity.ok(
+                    new GenericResponse<List<Message>>(
+                            "Message sent successfully",
+                            messages
+                    )
+            );
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    new GenericResponse<>(
+                            e.getMessage(),
+                            null
+                    )
+            );
         }
     }
 }

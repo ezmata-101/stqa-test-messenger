@@ -132,4 +132,20 @@ public class ConversationService {
             throw new SecurityException("User is not a member of this conversation");
         }
     }
+
+    public long getOtherParticipantId(long conversationId, long userId) {
+        Conversation conversation = conversationRepository.get(conversationId).
+                orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
+        if (conversation.getType() != com.ezmata.messenger.model.ConversationType.DIRECT) {
+            throw new IllegalArgumentException("Not a direct conversation");
+        }
+        List<Long> members = conversationRepository.getMembers(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Failed to retrieve conversation members"));
+        for (long memberId : members) {
+            if (memberId != userId) {
+                return memberId;
+            }
+        }
+        throw new IllegalArgumentException("Other participant not found");
+    }
 }

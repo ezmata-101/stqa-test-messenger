@@ -21,11 +21,15 @@ public class Conversation {
         return name;
     }
 
-    public String getType() {
-        return type.name();
+    public ConversationType getType() {
+        return type;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public long getConversationId() {
+        return id;
     }
 }

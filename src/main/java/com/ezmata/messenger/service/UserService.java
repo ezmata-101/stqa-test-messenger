@@ -56,4 +56,8 @@ public class UserService {
             throw new IllegalArgumentException("User not found");
         }
     }
+
+    public boolean isUserBlockedBy(long blocked, long blockedBy) {
+        return userRepository.isBlockedBy(blocked, blockedBy);
+    }
 }

@@ -63,7 +63,7 @@ public class InMemoryConversationRepository implements ConversationRepository {
             Set<Long> memberSet = entry.getValue();
             if (memberSet.size() == 2 && memberSet.contains(userId1) && memberSet.contains(userId2)) {
                 Conversation conversation = conversations.get(entry.getKey());
-                if (conversation != null && conversation.getType().equals(ConversationType.DIRECT.name())) {
+                if (conversation != null && conversation.getType() == ConversationType.DIRECT) {
                     return Optional.of(conversation);
                 }
             }
@@ -75,7 +75,7 @@ public class InMemoryConversationRepository implements ConversationRepository {
     public Optional<ConversationType> getConversationType(long conversationId) {
         Conversation conversation = conversations.get(conversationId);
         if (conversation != null) {
-            return Optional.of(ConversationType.valueOf(conversation.getType()));
+            return Optional.of(conversation.getType());
         }
         return Optional.empty();
     }
@@ -83,7 +83,7 @@ public class InMemoryConversationRepository implements ConversationRepository {
     @Override
     public boolean updateGroupConversationName(long conversationId, String name) {
         Conversation conversation = conversations.get(conversationId);
-        if (conversation != null && conversation.getType().equals(ConversationType.GROUP.name())) {
+        if (conversation != null && conversation.getType() == ConversationType.GROUP) {
             conversation.setName(name);
             return true;
         }
