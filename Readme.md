@@ -5,6 +5,10 @@
 * **Week 7 (January 09, Friday)**
     * Cannot be extended as we have one more assignment and two class tests afterward.
 
+## Presentation
+* **Week 8 (Tuesday - Section B and Wednesday - Section A)**
+    * Each team will present their findings in a short presentation during class.
+    * Focus on key defects found, risk areas, and recommendations.
 
 ## What you’ll do
 
@@ -54,6 +58,9 @@ Include a single PDF report plus an evidence folder:
 
     * Top risks you see in the current system
     * High-value fixes or hardening suggestions
+
+5. **Individual Reflections (1 page for whole team)**
+    * Each team member writes a short reflection on their contribution to the testing effort
 
 ### Evidence folder
 
