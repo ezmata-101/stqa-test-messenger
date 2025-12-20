@@ -60,4 +60,34 @@ public class UserService {
     public boolean isUserBlockedBy(long blocked, long blockedBy) {
         return userRepository.isBlockedBy(blocked, blockedBy);
     }
+
+    public boolean blockUser(String username, long blockedUserId) {
+        Optional<User> userOpt = userRepository.getByUsername(username);
+        if(userOpt.isPresent()) {
+            User user = userOpt.get();
+            Optional<User> blockedUserOpt = userRepository.get(blockedUserId);
+            if(blockedUserOpt.isPresent()) {
+                return userRepository.blockUser(user.getUserId(), blockedUserId);
+            } else {
+                throw new IllegalArgumentException("User to be blocked not found");
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
+    public boolean unblockUser(String username, long blockedUserId) {
+        Optional<User> userOpt = userRepository.getByUsername(username);
+        if(userOpt.isPresent()) {
+            User user = userOpt.get();
+            Optional<User> blockedUserOpt = userRepository.get(blockedUserId);
+            if(blockedUserOpt.isPresent()) {
+                return userRepository.unblockUser(user.getUserId(), blockedUserId);
+            } else {
+                throw new IllegalArgumentException("User to be unblocked not found");
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
 }

@@ -81,4 +81,49 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
+
+    @PatchMapping("/users/block/{id}")
+    public ResponseEntity<?> blockUser(
+            @PathVariable long id,
+            Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No authentication token provided");
+        }
+        if(!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+        try {
+            String usernameFromToken = authentication.getName();
+            if(userService.blockUser(usernameFromToken, id)) {
+                return ResponseEntity.ok(new GenericResponse("User blocked successfully", null));
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to block user");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/users/block/{id}")
+    public ResponseEntity<?> unblockUser(
+            @PathVariable long id,
+            Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No authentication token provided");
+        } else if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+        try {
+            String usernameFromToken = authentication.getName();
+            if(userService.unblockUser(usernameFromToken, id)) {
+                return ResponseEntity.ok(new GenericResponse("User unblocked successfully", null));
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to unblock user");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

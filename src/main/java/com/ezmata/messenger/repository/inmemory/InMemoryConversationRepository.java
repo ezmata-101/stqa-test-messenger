@@ -100,6 +100,7 @@ public class InMemoryConversationRepository implements ConversationRepository {
         Set<Long> memberSet = members.get(conversationId);
         if (memberSet != null) {
             System.out.println("Current members before addition: " + memberSet);
+            System.out.println("Adding user IDs: " + Arrays.toString(userId));
             for (long id : userId) {
                 memberSet.add(id);
             }

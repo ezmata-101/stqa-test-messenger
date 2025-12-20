@@ -70,7 +70,7 @@ public class ConversationController {
         }
     }
 
-    @DeleteMapping("/removeMember/")
+    @PostMapping("/removeMember")
     public ResponseEntity<?> removeMember(Authentication authentication, @RequestBody MemberModificationRequest request) {
         String username = authentication.getName();
         try{
