@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -55,12 +56,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/unauthapi")
-    public String unauthApi() {
-        return "Welcome to the server";
-    }
-
-    @GetMapping("/authapi")
+    @GetMapping("/test")
     public ResponseEntity<?> authApi(Authentication authentication) {
         if(authentication == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden");

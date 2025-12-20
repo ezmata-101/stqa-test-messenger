@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -17,7 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping("/")
     public ResponseEntity<?> getUsers(Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to view users");
@@ -28,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable long id, Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to view user details");
@@ -43,7 +44,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/username/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username, Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to view user details");
@@ -58,7 +59,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(
             @PathVariable long id,
             @RequestBody UserUpdateRequest request,
@@ -82,7 +83,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/users/block/{id}")
+    @PatchMapping("/block/{id}")
     public ResponseEntity<?> blockUser(
             @PathVariable long id,
             Authentication authentication) {
@@ -105,7 +106,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/users/block/{id}")
+    @DeleteMapping("/block/{id}")
     public ResponseEntity<?> unblockUser(
             @PathVariable long id,
             Authentication authentication) {

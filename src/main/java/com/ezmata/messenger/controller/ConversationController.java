@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/conversations")
+@RequestMapping("/conversations")
 public class ConversationController {
 
     private final ConversationService conversationService;

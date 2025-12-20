@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/messages")
 public class MessageController {
     private final MessageService messageService;
 
@@ -19,7 +20,7 @@ public class MessageController {
 
     //    this will by default return last 20 messages, if params are added for pagination, it can return accordingly
 //    add appropriate parameters
-    @GetMapping("/messages/{conversationId}/get")
+    @GetMapping("/{conversationId}/get")
     public ResponseEntity<?> getMessages(Authentication authentication,
                                       @PathVariable long conversationId,
                                       @RequestParam(required = false, defaultValue = "0") int page,
@@ -44,7 +45,7 @@ public class MessageController {
     }
 
 
-    @PostMapping("/messages/{conversationId}/send")
+    @PostMapping("/{conversationId}/send")
     public ResponseEntity<?> sendMessage(Authentication authentication,
                                             @PathVariable long conversationId,
                                             @RequestBody String content) {
