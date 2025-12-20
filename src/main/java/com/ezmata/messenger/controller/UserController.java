@@ -118,7 +118,7 @@ public class UserController {
         try {
             String usernameFromToken = authentication.getName();
             if(userService.unblockUser(usernameFromToken, id)) {
-                return ResponseEntity.ok(new GenericResponse("User unblocked successfully", null));
+                return ResponseEntity.ok(new GenericResponse<>("User unblocked successfully", null));
             }
             else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to unblock user");
